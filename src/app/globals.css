@@ -31,3 +31,9 @@ body {
     text-wrap: balance;
   }
 }
+
+.styled-input::placeholder {
+  color: #8aa3ad; 
+  font-weight: 300;
+  font-size: 13px;
+}

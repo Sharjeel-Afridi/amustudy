@@ -1,27 +1,38 @@
 "use client"
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Form = ({onPost}) => {
   const [inputText, setInputText] = useState('');
-  const [photo, setPhoto] = useState('');
+  const [photo, setPhoto] = useState(null);
+  const [photoURL, setPhotoURL] = useState(null);
+
+  useEffect(() => {
+    if (photo) {
+      const objectURL = URL.createObjectURL(photo);
+      setPhotoURL(objectURL);
+      // Clean up the object URL to avoid memory leaks
+      return () => URL.revokeObjectURL(objectURL);
+    }
+  }, [photo]);
 
   const handleTextChange = (e) => {
     setInputText(e.target.value);
   };
 
   const handlePhotoChange = (e) => {
-    setPhoto(URL.createObjectURL(e.target.files[0]));
+    setPhoto(e.target.files[0]);
   };
 
   const handleDelete = () => {
-    setPhoto('');
+    setPhoto(null);
   }
   const handlePost = () => {
     onPost(inputText, photo)
     setInputText('');
-    if (photo !== ''){
-        setPhoto('');
+    if (photo){
+        setPhoto(null)
+        setPhotoURL(null);
     }
   };
 
@@ -36,9 +47,9 @@ const Form = ({onPost}) => {
           onChange={handleTextChange}
         />
       </div>
-      {photo !== '' && (
+      {photoURL && (
         <div className="mb-4">
-          <Image src={photo} alt="Selected" width={200} height={200} className="w-full h-auto rounded-lg" />
+          <Image src={photoURL} alt="Selected" width={200} height={200} className="w-full h-auto rounded-lg" />
           <span 
             className="text-red-600 text-md hover:text-red-700 cursor-pointer"
             onClick={handleDelete}

@@ -8,7 +8,7 @@ const Navbar = () => {
       };
     
     return(
-        <div className="h-[10vh] w-[100%] flex justify-between items-center px-10 font-medium">
+        <div className="h-[10vh] w-[100%] flex justify-between items-center bg-[#0e1113] fixed px-10 font-medium">
             <h1>AMUStudy</h1>
             <input
                 type="text"

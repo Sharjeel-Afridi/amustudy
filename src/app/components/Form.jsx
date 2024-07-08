@@ -5,8 +5,10 @@ import pb from "../../../lib/pocketbase";
 
 const Form = () => {
   const [inputText, setInputText] = useState('');
+  const [title, setTitle] = useState('');
   const [photo, setPhoto] = useState(null);
   const [photoURL, setPhotoURL] = useState(null);
+  const [ loading, setLoading ] = useState(false);
 
   useEffect(() => {
     if (photo) {
@@ -17,6 +19,9 @@ const Form = () => {
     }
   }, [photo]);
 
+  const handleTitleChange = (e) => {
+    setTitle(e.target.value);
+  }
   const handleTextChange = (e) => {
     setInputText(e.target.value);
   };
@@ -34,30 +39,48 @@ const Form = () => {
   const handlePost = async () => {
     
     formData.append('username', 'sharjeel');
+    formData.append('title', title);
     formData.append('text', inputText);
     if (photo) {
       formData.append('image', photo);
     }
+    if( inputText !== '' && title !== ''){
 
-    try {
-      const record = await pb.collection('posts').create(formData);
-      // Clear the form after successful post
-      setInputText('');
-      setPhoto(null);
-      setPhotoURL(null);
-    } catch (error) {
-      console.error("Error creating post:", error);
+      setLoading(true);
+      try {
+        const record = await pb.collection('posts').create(formData);
+        // Clear the form after successful post
+        setTitle('');
+        setInputText('');
+        setPhoto(null);
+        setPhotoURL(null);
+      } catch (error) {
+        console.error("Error creating post:", error);
+      } finally{
+        setLoading(false)
+      }
+    }else{
+      alert("Cannot post empty fields!!");
     }
   };
 
   return (
     <div className="max-w-md mx-auto p-4 bg-[#2b3336]  rounded-lg shadow-md">
-      <div className="flex items-center space-x-4 mb-4">
-        <input
+      <div className="flex flex-col items-center space-x-4 mb-4">
+      <input
           type="text"
-          className="w-full px-4 py-2 bg-[#2b3336]  rounded-lg focus:outline-none focus:border-blue-500"
+          className="w-full  py-2 ml-4 bg-[#2b3336]  rounded-lg focus:outline-none"
+          placeholder="Title"
+          value={title}
+          rows='2'
+          onChange={handleTitleChange}
+        />
+        <textarea
+          type="text"
+          className="w-full resize-y py-2 bg-[#2b3336]  rounded-lg focus:outline-none"
           placeholder="Start a post"
           value={inputText}
+          rows='2'
           onChange={handleTextChange}
         />
       </div>
@@ -90,7 +113,7 @@ const Form = () => {
           onClick={handlePost}
           className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
         >
-          Post
+          {loading ? "Uploading.." : "Post"}
         </button>
       </div>
     </div>

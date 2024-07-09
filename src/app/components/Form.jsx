@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import pb from "../../../lib/pocketbase";
 
-const Form = () => {
+const Form = ({refresh}) => {
   const [inputText, setInputText] = useState('');
   const [title, setTitle] = useState('');
   const [photo, setPhoto] = useState(null);
@@ -58,6 +58,7 @@ const Form = () => {
         console.error("Error creating post:", error);
       } finally{
         setLoading(false)
+        refresh()
       }
     }else{
       alert("Cannot post empty fields!!");

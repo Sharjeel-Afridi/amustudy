@@ -12,17 +12,17 @@ export default function Home() {
   const [posts, setPosts] = useState([]);
   const router = useRouter(); 
   
+  const postsList = async () => {
+
+    const resultList = await pb.collection('posts').getList(1, 50, {
+      filter: 'created >= "2022-01-01 00:00:00"',
+      sort: '-created',
+    }, { requestKey: null });
+    console.log(resultList);
+    setPosts(resultList.items)
+  }
   useEffect(()=>{
 
-    const postsList = async () => {
-  
-      const resultList = await pb.collection('posts').getList(1, 50, {
-        filter: 'created >= "2022-01-01 00:00:00"',
-        sort: '-created',
-      }, { requestKey: null });
-      console.log(resultList);
-      setPosts(resultList.items)
-    }
     postsList();
   },[])
   
@@ -36,7 +36,7 @@ export default function Home() {
       <Navbar />
       <div className="pt-[10vh]">
 
-        <Form />
+        <Form refresh={postsList}/>
         <div className="flex flex-col items-center px-10">
           {posts.map((post, index) => (
             <div 

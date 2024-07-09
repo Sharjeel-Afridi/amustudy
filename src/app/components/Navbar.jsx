@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import Link from "next/link";
 
 const Navbar = () => {
     const [inputText, setInputText] = useState('');
@@ -18,9 +18,9 @@ const Navbar = () => {
                 onChange={handleTextChange}
             />
             
-            <button>
+            <Link href={'/login'}>
                 Login
-            </button>
+            </Link>
         </div>
     )
 }
